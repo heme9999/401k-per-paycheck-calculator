@@ -1,0 +1,70 @@
+---
+import LimitsStrip from '../components/LimitsStrip.astro';
+import RelatedGuides from '../components/RelatedGuides.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="2027 401(k) Contribution Limits (Official IRS Notice 2026-66)"
+  description="Official 2027 401(k) limits from IRS Notice 2026-66: $25,500 base deferral, $8,500 catch-up ($34,000), $11,750 super catch-up for ages 60-63 ($37,250), and $75,000 Section 415(c) limit."
+>
+  <article class="prose">
+    <h1>2027 401(k) Contribution Limits</h1>
+    <p class="subtitle">
+      <strong>Short answer:</strong> For 2027, the employee 401(k) elective deferral limit is <strong>$25,500</strong> (up from $24,500 in 2026). Workers age 50–59 or 64+ can contribute up to <strong>$34,000</strong>, and workers age 60–63 can contribute up to <strong>$37,250</strong> (IRS Notice 2026-66 / IR-2026-136, published November 12, 2026).
+    </p>
+
+    <div class="cta-back">
+      <a class="btn btn-primary" href="/" style="text-decoration: none;">Open 2027 Per-Paycheck Calculator →</a>
+    </div>
+
+    <LimitsStrip />
+
+    <h2>2027 vs. 2026 Official IRS Limits</h2>
+    <div tabindex="0" role="region" aria-label="2027 401(k) Limits Comparison" class="table-wrapper" style="margin-bottom: 1.5rem;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>2026 Limit</th>
+            <th>2027 Official Limit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Employee elective deferral (402(g))</th>
+            <td data-label="2026 Limit">$24,500</td>
+            <td data-label="2027 Official Limit">$25,500</td>
+          </tr>
+          <tr>
+            <th>Age 50+ catch-up (50–59 &amp; 64+)</th>
+            <td data-label="2026 Limit">$8,000 ($32,500 total)</td>
+            <td data-label="2027 Official Limit">$8,500 ($34,000 total)</td>
+          </tr>
+          <tr>
+            <th>Ages 60–63 super catch-up</th>
+            <td data-label="2026 Limit">$11,250 ($35,750 total)</td>
+            <td data-label="2027 Official Limit">$11,750 ($37,250 total)</td>
+          </tr>
+          <tr>
+            <th>Section 415(c) total additions (excl. catch-up)</th>
+            <td data-label="2026 Limit">$72,000</td>
+            <td data-label="2027 Official Limit">$75,000</td>
+          </tr>
+          <tr>
+            <th>IRA contribution limit (context only)</th>
+            <td data-label="2026 Limit">—</td>
+            <td data-label="2027 Official Limit">$7,500</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Section 415(c) Total Additions Limit ($75,000)</h2>
+    <p>
+      The combined limit for employee elective deferrals, employer matching contributions, profit-sharing, and after-tax non-Roth contributions is <strong>$75,000</strong> in 2027. Catch-up contributions do not count toward the 415(c) cap, so total additions can reach <strong>$83,500</strong> at age 50+ or <strong>$86,750</strong> at ages 60–63.
+    </p>
+  </article>
+
+  <RelatedGuides excludeHref="/2027-401k-limits/" />
+</BaseLayout>

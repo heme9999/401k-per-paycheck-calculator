@@ -1,0 +1,45 @@
+---
+import RelatedGuides from '../components/RelatedGuides.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Calculation Methodology & 2027 IRS Sources"
+  description="How the 2027 401(k) Per-Paycheck Calculator computes integer-cent schedules, final-paycheck adjustments, mandatory Roth catch-up splits, and true-up match estimates."
+>
+  <article class="prose">
+    <h1>Calculation Methodology &amp; Official Sources</h1>
+    <p class="subtitle">
+      <strong>Short answer:</strong> Every calculation runs locally in your browser using deterministic integer-cents arithmetic and official 2027 IRS and SSA figures.
+    </p>
+
+    <div class="cta-back">
+      <a class="btn btn-primary" href="/" style="text-decoration: none;">Back to Calculator →</a>
+    </div>
+
+    <h2>1. Integer-Cents &amp; Final-Paycheck Rounding</h2>
+    <p>
+      All dollar values are converted to integer cents before division. When dividing remaining annual room by remaining paychecks, the regular paycheck amount rounds <strong>down</strong> via <code>Math.floor(remainingCents / remainingPaychecks)</code>, and the exact remainder is added to the final paycheck. This guarantees the annual total equals the limit to the cent without ever exceeding it (e.g., 25 × $980.76 + $981.00 = $25,500.00).
+    </p>
+
+    <h2>2. Pay-Date &amp; 27-Paycheck Rules</h2>
+    <p>
+      Under <strong>26 CFR 1.451-2</strong> (constructive receipt), wages count in the calendar year they are actually paid. Because 2027 is not a leap year and January 1, 2027 is a Friday, biweekly schedules have 27 paydays (and weekly schedules have 53) only if the first 2027 payday falls on January 1, 2027.
+    </p>
+
+    <h2>3. Mandatory Roth Catch-Up Rule</h2>
+    <p>
+      Under SECURE 2.0 Section 603 (final regulations September 16, 2025, effective for taxable years beginning after December 31, 2026), if 2026 W-2 Box 3 FICA wages from the plan sponsor exceeded <strong>$155,000</strong>, any catch-up contributions above $25,500 are allocated as Roth.
+    </p>
+
+    <h2>4. Official Sources</h2>
+    <ul>
+      <li><strong>IRS Notice 2026-66 / IR-2026-136</strong> (Nov 12, 2026): $25,500 elective deferral, $8,500 age 50+ catch-up, $11,750 ages 60–63 super catch-up, $75,000 Section 415(c) limit, $155,000 Roth catch-up wage threshold, $7,500 IRA limit.</li>
+      <li><strong>IRC Section 414(v)(2)(B)(i)</strong>: Super catch-up replaces standard catch-up for ages 60–63; reverts at age 64.</li>
+      <li><strong>IRS Rev. Proc. 2026-35</strong> (Nov 5, 2026): 2027 federal income tax brackets and standard deductions.</li>
+      <li><strong>SSA 2027 Wage Base</strong> (Oct 14, 2026): $192,300 OASDI wage base ($11,922.60 max employee tax).</li>
+    </ul>
+  </article>
+
+  <RelatedGuides excludeHref="/methodology/" />
+</BaseLayout>

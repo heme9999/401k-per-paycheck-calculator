@@ -1,0 +1,72 @@
+---
+const rows = [
+  {
+    frequency: 'Weekly (52 paychecks)',
+    under50: '$490.38',
+    age50: '$653.84*',
+    age60to63: '$716.34*',
+  },
+  {
+    frequency: 'Weekly (53 paychecks — Jan 1 start)',
+    under50: '$481.13*',
+    age50: '$641.50*',
+    age60to63: '$702.83',
+  },
+  {
+    frequency: 'Biweekly (26 paychecks)',
+    under50: '$980.76*',
+    age50: '$1,307.69',
+    age60to63: '$1,432.69',
+  },
+  {
+    frequency: 'Biweekly (27 paychecks — Jan 1 start)',
+    under50: '$944.44',
+    age50: '$1,259.25*',
+    age60to63: '$1,379.62*',
+  },
+  {
+    frequency: 'Semi-monthly (24 paychecks)',
+    under50: '$1,062.50',
+    age50: '$1,416.66*',
+    age60to63: '$1,552.08',
+  },
+  {
+    frequency: 'Monthly (12 paychecks)',
+    under50: '$2,125.00',
+    age50: '$2,833.33',
+    age60to63: '$3,104.16*',
+  },
+];
+---
+
+<section aria-labelledby="maxout-table-heading">
+  <h2 id="maxout-table-heading">2027 401(k) Max-Out Per Paycheck Reference Table</h2>
+  <p class="hint">
+    Full-year regular paycheck amounts rounded down to the cent where marked with <code>*</code> so the annual total never exceeds the IRS limit (the final paycheck makes up the remaining cents).
+  </p>
+  <div tabindex="0" role="region" aria-labelledby="maxout-table-caption" class="table-wrapper">
+    <table class="data-table">
+      <caption id="maxout-table-caption">
+        2027 Full-Year Max-Out Amount Per Paycheck by Pay Frequency and Age Band
+      </caption>
+      <thead>
+        <tr>
+          <th scope="col">Pay Frequency</th>
+          <th scope="col">Under 50 ($25,500)</th>
+          <th scope="col">50–59 &amp; 64+ ($34,000)</th>
+          <th scope="col">Ages 60–63 ($37,250)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row) => (
+          <tr>
+            <th scope="row">{row.frequency}</th>
+            <td data-label="Under 50 ($25,500)">{row.under50}</td>
+            <td data-label="50–59 & 64+ ($34,000)">{row.age50}</td>
+            <td data-label="Ages 60–63 ($37,250)">{row.age60to63}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</section>

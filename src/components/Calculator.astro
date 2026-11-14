@@ -1,0 +1,527 @@
+---
+import { LIMITS } from '../config/limits';
+import { CURRENT_YEAR } from '../config/site';
+import { calculate } from '../engine/calculate';
+import { formatCents } from '../engine/money';
+import type { CalculatorInputs } from '../engine/types';
+
+const limits = LIMITS[CURRENT_YEAR];
+const initialInputs: CalculatorInputs = {
+  grossSalaryDollars: null,
+  payFrequency: 'biweekly',
+  hasExtraPaycheck: false,
+  remainingPaychecks: 26,
+  ageBand: null,
+  mode: 'maxout',
+  contributionUnit: 'percent',
+  contributionValue: null,
+  rothPercent: 0,
+  priorYearFicaOver155k: null,
+  ytdCurrentEmployerDollars: 0,
+  priorEmployerDollars: 0,
+  employerMatchRatePercent: null,
+  employerMatchCapPercent: null,
+  trueUp: 'unsure',
+  federalMarginalRatePercent: null,
+  stateMarginalRatePercent: null,
+};
+
+const initialResult = calculate(initialInputs, limits);
+---
+
+<section aria-label="401(k) Per-Paycheck Calculator" class="calc-grid">
+  <div class="card">
+    <form id="calc-form" novalidate>
+      <!-- Group A: Your pay -->
+      <div class="form-section">
+        <h2 class="form-section-title">A. Your Pay</h2>
+
+        <div class="field">
+          <fieldset class="segmented">
+            <legend class="fieldset-legend">Pay frequency</legend>
+            <div class="segmented-group segmented-group-wrap">
+              <div class="segmented-option">
+                <input type="radio" id="freq-weekly" name="pay-frequency" value="weekly" />
+                <label for="freq-weekly">Weekly (52)</label>
+              </div>
+              <div class="segmented-option">
+                <input type="radio" id="freq-biweekly" name="pay-frequency" value="biweekly" checked />
+                <label for="freq-biweekly">Biweekly (26)</label>
+              </div>
+              <div class="segmented-option">
+                <input type="radio" id="freq-semimonthly" name="pay-frequency" value="semimonthly" />
+                <label for="freq-semimonthly">Semi-mo (24)</label>
+              </div>
+              <div class="segmented-option">
+                <input type="radio" id="freq-monthly" name="pay-frequency" value="monthly" />
+                <label for="freq-monthly">Monthly (12)</label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="field" id="extra-paycheck-wrap">
+          <div class="checkbox-row">
+            <input type="checkbox" id="extra-paycheck" name="extra-paycheck" />
+            <label for="extra-paycheck" id="extra-paycheck-label">
+              27 paychecks in 2027 (first payday Jan 1, 2027)
+            </label>
+          </div>
+          <details class="why-inline">
+            <summary>Why? Check your first 2027 payday</summary>
+            <div class="why-inline-body">
+              <p style="margin-bottom: 0.5rem;">
+                2027 is not a leap year and Jan 1, 2027 is a Friday. Biweekly schedules have 27 paydays (and weekly have 53) only if your first 2027 payday is Jan 1. Because Jan 1 is a holiday, some employers pay Dec 31, 2026 (2026 income under 26 CFR 1.451-2).
+              </p>
+              <label for="first-payday">First 2027 payday date (optional check)</label>
+              <input type="date" id="first-payday" min="2027-01-01" max="2027-12-31" />
+              <span class="hint" id="first-payday-hint" style="margin-top: 0.25rem; margin-bottom: 0;">
+                Jan 1, 2027 is a Friday (holiday). Confirm your first actual payday.
+              </span>
+            </div>
+          </details>
+        </div>
+
+        <div class="field">
+          <fieldset class="segmented">
+            <legend class="fieldset-legend">
+              Age by Dec 31, 2027
+              <details class="why-inline">
+                <summary>Why?</summary>
+                <div class="why-inline-body">
+                  Catch-up eligibility is based on the age you attain by Dec 31, 2027. Ages 60–63 get the $11,750 super catch-up ($37,250 total), replacing the $8,500 catch-up. At 64 it drops back to $8,500 ($34,000 total).
+                </div>
+              </details>
+            </legend>
+            <div class="segmented-group segmented-group-wrap">
+              <div class="segmented-option">
+                <input type="radio" id="age-under50" name="age-band" value="under50" />
+                <label for="age-under50">Under 50 ($25.5k)</label>
+              </div>
+              <div class="segmented-option">
+                <input type="radio" id="age-50plus" name="age-band" value="50to59or64plus" />
+                <label for="age-50plus">50–59 / 64+ ($34k)</label>
+              </div>
+              <div class="segmented-option">
+                <input type="radio" id="age-60to63" name="age-band" value="60to63" />
+                <label for="age-60to63">60–63 ($37.25k)</label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div class="field">
+          <label for="gross-salary">Annual gross salary (optional for dollar math)</label>
+          <span class="hint" id="salary-hint">Needed for % of pay, employer match, and take-home estimates.</span>
+          <div class="input-wrap has-prefix">
+            <span class="input-affix input-affix-prefix" aria-hidden="true">$</span>
+            <input
+              type="text"
+              id="gross-salary"
+              name="gross-salary"
+              inputmode="decimal"
+              placeholder="e.g. 95,000"
+              data-numeric="dollar"
+              data-min="1"
+              data-error="salary-error"
+              data-error-text="Enter a salary above $0."
+              aria-describedby="salary-hint"
+            />
+          </div>
+          <div id="salary-error" class="error-msg">
+            <span role="img" aria-label="Error">⚠</span> Enter a salary above $0.
+          </div>
+        </div>
+      </div>
+
+      <!-- Group B: Your contribution -->
+      <div class="form-section">
+        <h2 class="form-section-title">B. Your Contribution</h2>
+
+        <div class="field">
+          <fieldset class="segmented">
+            <legend class="fieldset-legend">Goal</legend>
+            <div class="segmented-group">
+              <div class="segmented-option">
+                <input type="radio" id="mode-maxout" name="calc-mode" value="maxout" checked />
+                <label for="mode-maxout">Find my max-out amount</label>
+              </div>
+              <div class="segmented-option">
+                <input type="radio" id="mode-check" name="calc-mode" value="check" />
+                <label for="mode-check">Check my current contribution</label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+
+        <div id="check-current-group" hidden>
+          <div class="field-row field-row-2 field">
+            <div>
+              <fieldset class="segmented">
+                <legend class="fieldset-legend">Contribution unit</legend>
+                <div class="segmented-group">
+                  <div class="segmented-option">
+                    <input type="radio" id="unit-percent" name="contrib-unit" value="percent" checked />
+                    <label for="unit-percent">% of pay</label>
+                  </div>
+                  <div class="segmented-option">
+                    <input type="radio" id="unit-dollars" name="contrib-unit" value="dollars" />
+                    <label for="unit-dollars">$ / paycheck</label>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+            <div>
+              <label for="contrib-value">Current contribution</label>
+              <div class="input-wrap has-suffix" id="contrib-value-wrap">
+                <span class="input-affix input-affix-prefix" id="contrib-affix-prefix" aria-hidden="true" hidden>$</span>
+                <input
+                  type="text"
+                  id="contrib-value"
+                  name="contrib-value"
+                  inputmode="decimal"
+                  placeholder="e.g. 10"
+                  data-numeric="dollar"
+                  data-min="0"
+                  data-error="contrib-error"
+                  data-error-text="Enter 0 or a positive number."
+                />
+                <span class="input-affix input-affix-suffix" id="contrib-affix-suffix" aria-hidden="true">%</span>
+              </div>
+              <div id="contrib-error" class="error-msg">
+                <span role="img" aria-label="Error">⚠</span> Enter 0 or a positive number.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="roth-number">Roth share of contribution (default 100% pre-tax)</label>
+          <div class="range-pair">
+            <input
+              type="range"
+              id="roth-range"
+              min="0"
+              max="100"
+              step="1"
+              value="0"
+              aria-label="Roth percentage slider"
+            />
+            <div class="input-wrap has-suffix">
+              <input
+                type="number"
+                id="roth-number"
+                name="roth-percent"
+                min="0"
+                max="100"
+                step="1"
+                value="0"
+                inputmode="numeric"
+              />
+              <span class="input-affix input-affix-suffix" aria-hidden="true">%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="field" id="fica-155k-wrap">
+          <fieldset class="segmented">
+            <legend class="fieldset-legend">
+              Did 2026 FICA wages at this employer exceed $155,000?
+              <details class="why-inline">
+                <summary>Why?</summary>
+                <div class="why-inline-body">
+                  Under SECURE 2.0 Section 603, if your 2026 W-2 Box 3 FICA wages from this employer exceeded $155,000, any 2027 catch-up contributions (age 50+) must be Roth.
+                </div>
+              </details>
+            </legend>
+            <div class="segmented-group">
+              <div class="segmented-option">
+                <input type="radio" id="fica-unsure" name="fica-155k" value="unsure" checked />
+                <label for="fica-unsure">Not sure / N/A</label>
+              </div>
+              <div class="segmented-option">
+                <input type="radio" id="fica-no" name="fica-155k" value="no" />
+                <label for="fica-no">$155k or less</label>
+              </div>
+              <div class="segmented-option">
+                <input type="radio" id="fica-yes" name="fica-155k" value="yes" />
+                <label for="fica-yes">Over $155,000</label>
+              </div>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+
+      <!-- Group C: Changed jobs or starting midyear -->
+      <details class="disclosure">
+        <summary>C. Changed jobs or starting midyear?</summary>
+        <div class="disclosure-body">
+          <div class="field-row field-row-2 field">
+            <div>
+              <label for="ytd-current">YTD at current employer</label>
+              <div class="input-wrap has-prefix">
+                <span class="input-affix input-affix-prefix" aria-hidden="true">$</span>
+                <input
+                  type="text"
+                  id="ytd-current"
+                  name="ytd-current"
+                  inputmode="decimal"
+                  value="0"
+                  data-numeric="dollar"
+                  data-min="0"
+                  data-error="ytd-error"
+                  data-error-text="Enter $0 or more."
+                />
+              </div>
+              <div id="ytd-error" class="error-msg">
+                <span role="img" aria-label="Error">⚠</span> Enter $0 or more.
+              </div>
+            </div>
+            <div>
+              <label for="prior-employer">Prior employer in 2027</label>
+              <div class="input-wrap has-prefix">
+                <span class="input-affix input-affix-prefix" aria-hidden="true">$</span>
+                <input
+                  type="text"
+                  id="prior-employer"
+                  name="prior-employer"
+                  inputmode="decimal"
+                  value="0"
+                  data-numeric="dollar"
+                  data-min="0"
+                  data-error="prior-error"
+                  data-error-text="Enter $0 or more."
+                />
+              </div>
+              <div id="prior-error" class="error-msg">
+                <span role="img" aria-label="Error">⚠</span> Enter $0 or more.
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="remaining-paychecks">Remaining 2027 paychecks</label>
+            <span class="hint">Confirm your actual remaining 2027 paydays (including the final December check).</span>
+            <input
+              type="number"
+              id="remaining-paychecks"
+              name="remaining-paychecks"
+              min="0"
+              max="53"
+              step="1"
+              value="26"
+              inputmode="numeric"
+            />
+          </div>
+        </div>
+      </details>
+
+      <!-- Group D: Employer match -->
+      <details class="disclosure">
+        <summary>D. Employer match &amp; true-up (optional)</summary>
+        <div class="disclosure-body">
+          <div class="field-row field-row-2 field">
+            <div>
+              <label for="match-rate">Employer match rate</label>
+              <span class="hint">e.g. 100 for dollar-for-dollar, 50 for 50%</span>
+              <div class="input-wrap has-suffix">
+                <input type="number" id="match-rate" min="0" max="200" step="1" placeholder="e.g. 100" inputmode="decimal" />
+                <span class="input-affix input-affix-suffix" aria-hidden="true">%</span>
+              </div>
+            </div>
+            <div>
+              <label for="match-cap">Matched up to % of pay</label>
+              <span class="hint">e.g. 5 for up to 5% of salary</span>
+              <div class="input-wrap has-suffix">
+                <input type="number" id="match-cap" min="0" max="50" step="0.5" placeholder="e.g. 5" inputmode="decimal" />
+                <span class="input-affix input-affix-suffix" aria-hidden="true">%</span>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <fieldset class="segmented">
+              <legend class="fieldset-legend">Does your plan offer a year-end true-up?</legend>
+              <div class="segmented-group">
+                <div class="segmented-option">
+                  <input type="radio" id="trueup-yes" name="true-up" value="yes" />
+                  <label for="trueup-yes">Yes</label>
+                </div>
+                <div class="segmented-option">
+                  <input type="radio" id="trueup-no" name="true-up" value="no" />
+                  <label for="trueup-no">No</label>
+                </div>
+                <div class="segmented-option">
+                  <input type="radio" id="trueup-unsure" name="true-up" value="unsure" checked />
+                  <label for="trueup-unsure">Not sure</label>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      </details>
+
+      <!-- Group E: Take-home estimate -->
+      <details class="disclosure">
+        <summary>E. Take-home pay estimate (optional)</summary>
+        <div class="disclosure-body">
+          <p class="hint">
+            Enter your marginal income tax rates to estimate per-paycheck take-home impact. Pre-tax 401(k) deferrals never reduce Social Security or Medicare taxes.
+          </p>
+          <div class="field-row field-row-2">
+            <div>
+              <label for="fed-tax-rate">Federal marginal rate</label>
+              <div class="input-wrap has-suffix">
+                <input type="number" id="fed-tax-rate" min="0" max="37" step="1" placeholder="e.g. 22" inputmode="decimal" />
+                <span class="input-affix input-affix-suffix" aria-hidden="true">%</span>
+              </div>
+            </div>
+            <div>
+              <label for="state-tax-rate">State marginal rate</label>
+              <div class="input-wrap has-suffix">
+                <input type="number" id="state-tax-rate" min="0" max="15" step="0.1" placeholder="e.g. 5" inputmode="decimal" />
+                <span class="input-affix input-affix-suffix" aria-hidden="true">%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+    </form>
+  </div>
+
+  <!-- Results Column -->
+  <div class="calc-results-col" id="results-card">
+    <div class="card">
+      <div id="results-region" aria-live="polite">
+        <div class="result-headline-label">2027 Max-Out Targets by Age (Select your age band to lock one in)</div>
+        <div class="targets-compare">
+          {initialResult.allTargets.map((t) => (
+            <div class="target-box">
+              <div class="target-box-age">
+                {t.ageBand === 'under50' ? 'Under 50' : t.ageBand === '50to59or64plus' ? '50–59 or 64+' : 'Ages 60–63'}
+              </div>
+              <div class="target-box-amount">{formatCents(t.regularPaycheckCents)}</div>
+              <div class="target-box-limit">Limit: {formatCents(t.annualLimitCents, { showZeroCents: false })}</div>
+            </div>
+          ))}
+        </div>
+        <div class="result-headline-label">Per remaining paycheck (Under 50 base)</div>
+        <div class="result-headline-value tabular">{formatCents(initialResult.regularPaycheckCents)}</div>
+        <p class="result-subline">
+          Final paycheck adjusted to <strong>{formatCents(initialResult.finalPaycheckCents)}</strong> so the year totals exact {formatCents(initialResult.cappedProjectedAnnualEmployeeCents)} (never over the limit).
+        </p>
+      </div>
+
+      <div class="actions-row">
+        <button type="button" class="btn" id="copy-link-btn">Copy link</button>
+        <div class="checkbox-row" style="min-height: 36px;">
+          <input type="checkbox" id="include-salary-link" />
+          <label for="include-salary-link" style="font-size: 0.875rem; color: var(--text-secondary);">
+            Include salary in link
+          </label>
+        </div>
+        <span id="copy-link-status" class="hint" style="margin: 0;" aria-live="polite"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Mobile Sticky Bottom Bar -->
+<div class="mobile-sticky-bar" id="mobile-sticky-bar">
+  <div>
+    <div class="mobile-sticky-amount" id="mobile-sticky-amount">{formatCents(initialResult.regularPaycheckCents)}</div>
+    <div class="mobile-sticky-label" id="mobile-sticky-sub">per paycheck (Under 50 base)</div>
+  </div>
+  <a href="#results-card" class="btn btn-primary" style="text-decoration: none;">See breakdown</a>
+</div>
+
+<script>
+  import { LIMITS } from '../config/limits';
+  import { CURRENT_YEAR } from '../config/site';
+  import { calculate } from '../engine/calculate';
+  import { applyFragmentToForm, readFormInputs, syncConditionalControls } from '../ui/form';
+  import { renderResults } from '../ui/render';
+  import { encodeShareFragment } from '../ui/shareLink';
+  import { initValidation } from '../ui/validate';
+
+  const form = document.getElementById('calc-form') as HTMLFormElement | null;
+  const resultsRegion = document.getElementById('results-region');
+  const mobileAmount = document.getElementById('mobile-sticky-amount');
+  const mobileSub = document.getElementById('mobile-sticky-sub');
+  const copyBtn = document.getElementById('copy-link-btn');
+  const includeSalaryBox = document.getElementById('include-salary-link') as HTMLInputElement | null;
+  const copyStatus = document.getElementById('copy-link-status');
+
+  if (form && resultsRegion) {
+    initValidation(form);
+
+    if (window.location.hash) {
+      applyFragmentToForm(form, window.location.hash);
+    }
+
+    const remInput = form.querySelector<HTMLInputElement>('#remaining-paychecks');
+    remInput?.addEventListener('input', () => {
+      remInput.dataset.userEdited = 'true';
+    });
+
+    // Reset userEdited when user explicitly switches pay frequency or 27/53 toggle
+    form.querySelectorAll('input[name="pay-frequency"], #extra-paycheck').forEach((el) => {
+      el.addEventListener('change', () => {
+        if (remInput) delete remInput.dataset.userEdited;
+      });
+    });
+
+    // Sync Roth slider & exact number input
+    const rothRange = form.querySelector<HTMLInputElement>('#roth-range');
+    const rothNumber = form.querySelector<HTMLInputElement>('#roth-number');
+    rothRange?.addEventListener('input', () => {
+      if (rothNumber) rothNumber.value = rothRange.value;
+    });
+    rothNumber?.addEventListener('input', () => {
+      if (rothRange && rothNumber.value !== '') {
+        const clamped = Math.min(100, Math.max(0, Number(rothNumber.value)));
+        if (Number.isFinite(clamped)) rothRange.value = String(clamped);
+      }
+    });
+
+    const runCalculation = () => {
+      syncConditionalControls(form);
+      const inputs = readFormInputs(form);
+      const result = calculate(inputs, LIMITS[CURRENT_YEAR]);
+      renderResults(result, resultsRegion, {
+        amountEl: mobileAmount,
+        subEl: mobileSub,
+      });
+    };
+
+    let debounceTimer: ReturnType<typeof setTimeout> | undefined;
+    const scheduleUpdate = () => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(runCalculation, 100);
+    };
+
+    form.addEventListener('input', scheduleUpdate);
+    form.addEventListener('change', scheduleUpdate);
+
+    // Initial render
+    runCalculation();
+
+    copyBtn?.addEventListener('click', async () => {
+      const inputs = readFormInputs(form);
+      const fragment = encodeShareFragment(
+        inputs,
+        Boolean(includeSalaryBox?.checked),
+      );
+      const url = `${window.location.origin}${window.location.pathname}${fragment}`;
+      try {
+        await navigator.clipboard.writeText(url);
+        if (copyStatus) copyStatus.textContent = 'Link copied!';
+      } catch {
+        window.location.hash = fragment;
+        if (copyStatus) copyStatus.textContent = 'Link updated in address bar.';
+      }
+      setTimeout(() => {
+        if (copyStatus) copyStatus.textContent = '';
+      }, 2500);
+    });
+  }
+</script>

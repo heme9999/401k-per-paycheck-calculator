@@ -1,0 +1,32 @@
+---
+import MaxOutTable from '../components/MaxOutTable.astro';
+import RelatedGuides from '../components/RelatedGuides.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="How Much 401(k) Per Paycheck to Max Out in 2027"
+  description="Exact per-paycheck 401(k) amounts to max out $25,500, $34,000, or $37,250 in 2027 for weekly, biweekly (26 and 27), semi-monthly, and monthly schedules."
+>
+  <article class="prose">
+    <h1>How Much 401(k) Per Paycheck to Max Out in 2027</h1>
+    <p class="subtitle">
+      <strong>Short answer:</strong> For a standard 26-paycheck biweekly schedule, maxing out the $25,500 limit takes <strong>$980.76</strong> per paycheck for 25 paychecks and <strong>$981.00</strong> on the final paycheck (or $1,307.69 for age 50+, and $1,432.69 for ages 60–63).
+    </p>
+
+    <div class="cta-back">
+      <a class="btn btn-primary" href="/" style="text-decoration: none;">Customize for Your Remaining Paychecks →</a>
+    </div>
+  </article>
+
+  <MaxOutTable />
+
+  <article class="prose" style="margin-top: 1.5rem;">
+    <h2>Why We Round Down to the Cent (Never $980.77 × 26)</h2>
+    <p>
+      Dividing $25,500 by 26 gives $980.76923…. Rounding up to $980.77 × 26 equals $25,500.02—two cents over the statutory limit. Rounding the regular paycheck down to $980.76 and adjusting the final paycheck to $981.00 hits $25,500.00 to the penny.
+    </p>
+  </article>
+
+  <RelatedGuides excludeHref="/how-much-401k-per-paycheck-to-max-out-2027/" />
+</BaseLayout>

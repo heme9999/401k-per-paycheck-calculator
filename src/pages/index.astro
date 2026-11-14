@@ -1,0 +1,69 @@
+---
+import Calculator from '../components/Calculator.astro';
+import FAQ, { FAQ_ITEMS } from '../components/FAQ.astro';
+import LimitsStrip from '../components/LimitsStrip.astro';
+import MaxOutTable from '../components/MaxOutTable.astro';
+import RelatedGuides from '../components/RelatedGuides.astro';
+import { SITE } from '../config/site';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const webAppSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: '2027 401(k) Per Paycheck Calculator',
+  url: SITE.url,
+  applicationCategory: 'FinanceApplication',
+  operatingSystem: 'All',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+  },
+  description:
+    'Free 2027 401(k) per-paycheck calculator using official IRS Notice 2026-66 limits ($25,500 base, $34,000 at 50+, $37,250 at 60-63). Supports 27-paycheck years, midyear job changes, employer match true-up, and Roth catch-up rules.',
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQ_ITEMS.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer,
+    },
+  })),
+};
+---
+
+<BaseLayout
+  title="2027 401(k) Per Paycheck Calculator | Official IRS Notice 2026-66 Limits"
+  description="Calculate your exact 2027 401(k) contribution per paycheck using official IRS Notice 2026-66 limits ($25,500 / $34,000 / $37,250). Handles 27 biweekly paychecks, prior-employer YTD, Roth catch-up rules, and employer match true-up."
+  canonicalPath="/"
+  hasCalculator={true}
+  structuredData={[webAppSchema, faqSchema]}
+>
+  <h1>2027 401(k) Per Paycheck Calculator</h1>
+  <p class="subtitle">Free · No signup · Calculated in your browser</p>
+
+  <LimitsStrip />
+
+  <Calculator />
+
+  <MaxOutTable />
+
+  <section class="prose" aria-labelledby="how-calc-heading">
+    <h2 id="how-calc-heading">How It’s Calculated</h2>
+    <p>
+      All dollar math runs in integer cents so rounding never pushes you over the IRS limit. When your remaining room does not divide evenly across remaining paychecks (for example, $25,500 ÷ 26 = $980.769…), the regular paycheck rounds down to $980.76 and the final paycheck adds the remaining $0.24 ($981.00) so your year-end total is exact.
+    </p>
+    <p>
+      <a href="/methodology/">Read the full calculation methodology &amp; IRS sources →</a>
+    </p>
+  </section>
+
+  <FAQ />
+
+  <RelatedGuides />
+</BaseLayout>

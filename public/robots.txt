@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://401k-per-paycheck-calculator.pages.dev/sitemap.xml

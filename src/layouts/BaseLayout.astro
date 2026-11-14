@@ -1,0 +1,87 @@
+---
+import '../styles/tokens.css';
+import { LIMITS } from '../config/limits';
+import { CURRENT_YEAR, SITE } from '../config/site';
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath?: string;
+  hasCalculator?: boolean;
+  structuredData?: Record<string, unknown> | readonly Record<string, unknown>[];
+}
+
+const {
+  title,
+  description,
+  canonicalPath = Astro.url.pathname,
+  hasCalculator = false,
+  structuredData,
+} = Astro.props;
+
+const canonicalUrl = new URL(canonicalPath, SITE.url).toString();
+const limits = LIMITS[CURRENT_YEAR];
+const schemas = structuredData
+  ? Array.isArray(structuredData)
+    ? structuredData
+    : [structuredData]
+  : [];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta name="theme-color" content="#0F6B4F" />
+    {schemas.map((schema) => (
+      <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    ))}
+  </head>
+  <body class={hasCalculator ? 'has-calculator' : ''}>
+    <header class="site-header">
+      <div class="container site-header-inner">
+        <a class="site-brand" href="/">
+          <span class="site-brand-mark" aria-hidden="true">401k</span>
+          <span>2027 Per-Paycheck Calculator</span>
+        </a>
+        <nav class="site-nav" aria-label="Primary">
+          <a href="/" aria-current={Astro.url.pathname === '/' ? 'page' : undefined}>Calculator</a>
+          <a href="/2027-401k-limits/" aria-current={Astro.url.pathname === '/2027-401k-limits/' ? 'page' : undefined}>2027 Limits</a>
+          <a href="/401k-super-catch-up-60-63-2027/" aria-current={Astro.url.pathname === '/401k-super-catch-up-60-63-2027/' ? 'page' : undefined}>Ages 60–63</a>
+          <a href="/roth-catch-up-high-earners/" aria-current={Astro.url.pathname === '/roth-catch-up-high-earners/' ? 'page' : undefined}>Roth Rule</a>
+          <a href="/methodology/" aria-current={Astro.url.pathname === '/methodology/' ? 'page' : undefined}>Methodology</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-grid">
+        <div>
+          <p style="margin-bottom: 0.375rem;">
+            <strong>Sources:</strong> {limits.source} (Nov 12, 2026) · Rev. Proc. 2026-35 (Nov 5, 2026) · SSA 2027 Wage Base $192,300 (Oct 14, 2026) · 26 CFR 1.451-2.
+          </p>
+          <p style="margin-bottom: 0;">
+            Last updated: <time datetime={SITE.lastUpdated}>{SITE.lastUpdated}</time> · Educational arithmetic tool, not tax, legal, or financial advice.
+          </p>
+        </div>
+        <div class="footer-links">
+          <a href="/methodology/">Methodology</a>
+          <a href="/about/">About</a>
+          <a href="/privacy/">Privacy</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

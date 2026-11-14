@@ -1,0 +1,40 @@
+---
+import RelatedGuides from '../components/RelatedGuides.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="How 401(k) Contributions Affect Take-Home Pay in 2027"
+  description="Why pre-tax 401(k) deferrals reduce federal and state income tax withholding—but never Social Security ($192,300 wage base) or Medicare taxes."
+>
+  <article class="prose">
+    <h1>How 401(k) Contributions Affect Take-Home Pay</h1>
+    <p class="subtitle">
+      <strong>Short answer:</strong> A pre-tax 401(k) contribution reduces your take-home pay by less than the contribution amount because it lowers your federal (and most state) income tax withholding. However, pre-tax 401(k) deferrals do <strong>not</strong> reduce Social Security or Medicare (FICA) taxes.
+    </p>
+
+    <div class="cta-back">
+      <a class="btn btn-primary" href="/" style="text-decoration: none;">Estimate Take-Home Impact in the Calculator →</a>
+    </div>
+
+    <h2>No FICA Tax Savings on Pre-Tax 401(k)</h2>
+    <p>
+      Unlike HSA or Section 125 health insurance premiums, employee 401(k) contributions are still subject to:
+    </p>
+    <ul>
+      <li><strong>Social Security (OASDI):</strong> 6.2% up to the 2027 wage base of <strong>$192,300</strong> (maximum employee OASDI tax of <strong>$11,922.60</strong>, per SSA announcement October 14, 2026).</li>
+      <li><strong>Medicare:</strong> 1.45% on all covered wages (no cap), plus an additional 0.9% Medicare surtax above $200,000 single / $250,000 married filing jointly (not indexed).</li>
+    </ul>
+
+    <h2>2027 Federal Income Tax Brackets (Reference Only)</h2>
+    <p>
+      Per IRS <strong>Rev. Proc. 2026-35</strong> (November 5, 2026), the 2027 standard deduction is <strong>$16,600</strong> (Single), <strong>$33,200</strong> (Married Filing Jointly), and <strong>$24,925</strong> (Head of Household). Tax rates remain 10%, 12%, 22%, 24%, 32%, 35%, and 37%:
+    </p>
+    <ul>
+      <li><strong>Single:</strong> 10% to $12,800; 12% to $52,025; 22% to $109,125; 24% to $208,325; 32% to $264,550; 35% to $661,375; 37% above.</li>
+      <li><strong>Married Filing Jointly:</strong> 10% to $25,600; 12% to $104,050; 22% to $218,250; 24% to $416,650; 32% to $529,100; 35% to $793,650; 37% above.</li>
+    </ul>
+  </article>
+
+  <RelatedGuides excludeHref="/401k-take-home-pay-impact/" />
+</BaseLayout>

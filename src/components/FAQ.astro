@@ -1,0 +1,73 @@
+---
+export interface FaqItem {
+  readonly question: string;
+  readonly answer: string;
+  readonly linkHref: string;
+  readonly linkLabel: string;
+}
+
+export const FAQ_ITEMS: readonly FaqItem[] = [
+  {
+    question: 'What is the 2027 401(k) contribution limit?',
+    answer:
+      'Per IRS Notice 2026-66 (published November 12, 2026), the 2027 employee elective deferral limit is $25,500, up from $24,500 in 2026. Including catch-up contributions, employees age 50–59 or 64+ can contribute up to $34,000, and employees age 60–63 can contribute up to $37,250.',
+    linkHref: '/2027-401k-limits/',
+    linkLabel: 'Full 2027 401(k) limits breakdown',
+  },
+  {
+    question: 'How much should I contribute per paycheck to max out in 2027?',
+    answer:
+      'On a standard 26-paycheck biweekly schedule, maxing out $25,500 requires $980.76 per paycheck for the first 25 paychecks and $981.00 on the final paycheck. Using $980.77 for all 26 paychecks would total $25,500.02, exceeding the limit by $0.02.',
+    linkHref: '/how-much-401k-per-paycheck-to-max-out-2027/',
+    linkLabel: 'See all pay frequency max-out schedules',
+  },
+  {
+    question: 'How does the ages 60–63 super catch-up work in 2027?',
+    answer:
+      'If you attain age 60, 61, 62, or 63 by December 31, 2027, your catch-up limit is $11,750 instead of the standard $8,500 catch-up—bringing your employee limit to $37,250. The super catch-up replaces the standard catch-up rather than stacking on top of it, and at age 64 it drops back to $8,500.',
+    linkHref: '/401k-super-catch-up-60-63-2027/',
+    linkLabel: 'Read the ages 60–63 super catch-up rules',
+  },
+  {
+    question: 'Who must make Roth catch-up contributions in 2027?',
+    answer:
+      'Under SECURE 2.0 Section 603 (effective for taxable years beginning after December 31, 2026), participants whose prior-year FICA wages (W-2 Box 3) from the plan sponsor exceeded $155,000 in 2026 must make catch-up contributions as Roth. If you had no FICA wages with that employer, the rule does not apply.',
+    linkHref: '/roth-catch-up-high-earners/',
+    linkLabel: 'Learn about the $155,000 Roth catch-up rule',
+  },
+  {
+    question: 'Why might I have 27 biweekly or 53 weekly paychecks in 2027?',
+    answer:
+      'January 1, 2027 falls on a Friday, so biweekly or weekly schedules whose first 2027 payday lands on January 1 will have 27 biweekly or 53 weekly paydays in 2027. Because January 1 is a federal holiday, some employers shift that payday to December 31, 2026—which counts as 2026 income under constructive receipt (26 CFR 1.451-2).',
+    linkHref: '/27-paychecks-401k-2027/',
+    linkLabel: 'Check your 2027 payday count',
+  },
+  {
+    question: 'Do 401(k) contributions at a prior job count toward my 2027 limit?',
+    answer:
+      'Yes. The $25,500 elective deferral limit (and applicable catch-up limit) is per person across all employers in 2027, not per plan. Always subtract what you already contributed at a prior employer this year before setting your new paycheck amount.',
+    linkHref: '/401k-limit-changing-jobs/',
+    linkLabel: 'How to handle 401(k) limits when changing jobs',
+  },
+  {
+    question: 'Do pre-tax 401(k) contributions reduce Social Security or Medicare taxes?',
+    answer:
+      'No. Pre-tax 401(k) deferrals reduce federal and most state income tax withholding, but they are still subject to 6.2% Social Security (up to the $192,300 2027 wage base) and 1.45% Medicare taxes.',
+    linkHref: '/401k-take-home-pay-impact/',
+    linkLabel: 'See how 401(k) contributions affect take-home pay',
+  },
+];
+---
+
+<section class="faq-list" aria-labelledby="faq-heading">
+  <h2 id="faq-heading">Frequently Asked Questions</h2>
+  {FAQ_ITEMS.map((item) => (
+    <details>
+      <summary>{item.question}</summary>
+      <div class="faq-answer">
+        <p style="margin-bottom: 0.5rem;">{item.answer}</p>
+        <a href={item.linkHref}>{item.linkLabel} →</a>
+      </div>
+    </details>
+  ))}
+</section>

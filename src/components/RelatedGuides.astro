@@ -1,0 +1,24 @@
+---
+import { INNER_GUIDES } from '../config/site';
+
+interface Props {
+  excludeHref?: string;
+}
+
+const { excludeHref } = Astro.props;
+const guides = excludeHref
+  ? INNER_GUIDES.filter((g) => g.href !== excludeHref)
+  : INNER_GUIDES;
+---
+
+<section aria-labelledby="related-guides-heading">
+  <h2 id="related-guides-heading">Related 2027 401(k) Guides</h2>
+  <div class="guides-grid">
+    {guides.map((guide) => (
+      <a class="guide-card" href={guide.href}>
+        <div class="guide-card-title">{guide.title}</div>
+        <p class="guide-card-desc">{guide.summary}</p>
+      </a>
+    ))}
+  </div>
+</section>
