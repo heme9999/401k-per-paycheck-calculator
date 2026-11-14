@@ -50,7 +50,7 @@ const initialResult = calculate(initialInputs, limits);
               </div>
               <div class="segmented-option">
                 <input type="radio" id="freq-semimonthly" name="pay-frequency" value="semimonthly" />
-                <label for="freq-semimonthly">Semi-mo (24)</label>
+                <label for="freq-semimonthly">Semi-monthly (24)</label>
               </div>
               <div class="segmented-option">
                 <input type="radio" id="freq-monthly" name="pay-frequency" value="monthly" />
@@ -67,6 +67,9 @@ const initialResult = calculate(initialInputs, limits);
               27 paychecks in 2027 (first payday Jan 1, 2027)
             </label>
           </div>
+          <span class="hint" style="margin-bottom: 0.25rem;">
+            Counts 27 biweekly / 53 weekly paydays only if your first 2027 payday is Fri, Jan 1, 2027.
+          </span>
           <details class="why-inline">
             <summary>Why? Check your first 2027 payday</summary>
             <div class="why-inline-body">
@@ -96,15 +99,15 @@ const initialResult = calculate(initialInputs, limits);
             <div class="segmented-group segmented-group-wrap">
               <div class="segmented-option">
                 <input type="radio" id="age-under50" name="age-band" value="under50" />
-                <label for="age-under50">Under 50 ($25.5k)</label>
+                <label for="age-under50">Under 50 ($25,500)</label>
               </div>
               <div class="segmented-option">
                 <input type="radio" id="age-50plus" name="age-band" value="50to59or64plus" />
-                <label for="age-50plus">50–59 / 64+ ($34k)</label>
+                <label for="age-50plus">50–59 / 64+ ($34,000)</label>
               </div>
               <div class="segmented-option">
                 <input type="radio" id="age-60to63" name="age-band" value="60to63" />
-                <label for="age-60to63">60–63 ($37.25k)</label>
+                <label for="age-60to63">Ages 60–63 ($37,250)</label>
               </div>
             </div>
           </fieldset>
@@ -196,7 +199,7 @@ const initialResult = calculate(initialInputs, limits);
         </div>
 
         <div class="field">
-          <label for="roth-number">Roth share of contribution (default 100% pre-tax)</label>
+          <label for="roth-number">Roth vs. Pre-Tax Split (0% = all pre-tax)</label>
           <div class="range-pair">
             <input
               type="range"
@@ -317,7 +320,7 @@ const initialResult = calculate(initialInputs, limits);
       </details>
 
       <!-- Group D: Employer match -->
-      <details class="disclosure">
+      <details class="disclosure" id="employer-match-disclosure">
         <summary>D. Employer match &amp; true-up (optional)</summary>
         <div class="disclosure-body">
           <div class="field-row field-row-2 field">
@@ -392,23 +395,34 @@ const initialResult = calculate(initialInputs, limits);
   <div class="calc-results-col" id="results-card">
     <div class="card">
       <div id="results-region" aria-live="polite">
-        <div class="result-headline-label">2027 Max-Out Targets by Age (Select your age band to lock one in)</div>
+        <h2 class="results-section-heading">Your 2027 Per-Paycheck Plan</h2>
+        <div class="result-headline-label">2027 Max-Out Targets by Age (Click a card to lock in)</div>
         <div class="targets-compare">
           {initialResult.allTargets.map((t) => (
-            <div class="target-box">
+            <button type="button" class="target-box" data-select-age={t.ageBand}>
               <div class="target-box-age">
                 {t.ageBand === 'under50' ? 'Under 50' : t.ageBand === '50to59or64plus' ? '50–59 or 64+' : 'Ages 60–63'}
               </div>
               <div class="target-box-amount">{formatCents(t.regularPaycheckCents)}</div>
               <div class="target-box-limit">Limit: {formatCents(t.annualLimitCents, { showZeroCents: false })}</div>
-            </div>
+              <span class="target-box-cta">Select →</span>
+            </button>
           ))}
         </div>
-        <div class="result-headline-label">Per remaining paycheck (Under 50 base)</div>
-        <div class="result-headline-value tabular">{formatCents(initialResult.regularPaycheckCents)}</div>
-        <p class="result-subline">
-          Final paycheck adjusted to <strong>{formatCents(initialResult.finalPaycheckCents)}</strong> so the year totals exact {formatCents(initialResult.cappedProjectedAnnualEmployeeCents)} (never over the limit).
-        </p>
+        <div class="status-banner status-banner-info">
+          <span aria-hidden="true">i</span>
+          <div>Select your age band above (or click one of the three target cards) to lock in your per-paycheck plan, final paycheck adjustment, and progress tracker.</div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-labels">
+            <span>So far: $0</span>
+            <span>Select an age band to project</span>
+          </div>
+          <div class="progress-track" role="img" aria-label="No age band selected yet">
+            <div class="progress-ytd" style="width: 0%"></div>
+            <div class="progress-projected" style="width: 0%"></div>
+          </div>
+        </div>
       </div>
 
       <div class="actions-row">
@@ -428,10 +442,10 @@ const initialResult = calculate(initialInputs, limits);
 <!-- Mobile Sticky Bottom Bar -->
 <div class="mobile-sticky-bar" id="mobile-sticky-bar">
   <div>
-    <div class="mobile-sticky-amount" id="mobile-sticky-amount">{formatCents(initialResult.regularPaycheckCents)}</div>
-    <div class="mobile-sticky-label" id="mobile-sticky-sub">per paycheck (Under 50 base)</div>
+    <div class="mobile-sticky-amount" id="mobile-sticky-amount">Select age</div>
+    <div class="mobile-sticky-label" id="mobile-sticky-sub">2027 limits: $25,500 / $34,000 / $37,250</div>
   </div>
-  <a href="#results-card" class="btn btn-primary" style="text-decoration: none;">See breakdown</a>
+  <a href="#results-card" class="btn btn-primary" style="text-decoration: none;">View results</a>
 </div>
 
 <script>
@@ -450,6 +464,8 @@ const initialResult = calculate(initialInputs, limits);
   const copyBtn = document.getElementById('copy-link-btn');
   const includeSalaryBox = document.getElementById('include-salary-link') as HTMLInputElement | null;
   const copyStatus = document.getElementById('copy-link-status');
+  const matchDisclosure = document.getElementById('employer-match-disclosure') as HTMLDetailsElement | null;
+  const salaryInput = document.getElementById('gross-salary') as HTMLInputElement | null;
 
   if (form && resultsRegion) {
     initValidation(form);
@@ -483,6 +499,15 @@ const initialResult = calculate(initialInputs, limits);
       }
     });
 
+    // Auto-open Employer Match section once when user enters a salary
+    let autoOpenedMatch = false;
+    salaryInput?.addEventListener('input', () => {
+      if (!autoOpenedMatch && salaryInput.value.trim() !== '' && matchDisclosure && !matchDisclosure.open) {
+        matchDisclosure.open = true;
+        autoOpenedMatch = true;
+      }
+    });
+
     const runCalculation = () => {
       syncConditionalControls(form);
       const inputs = readFormInputs(form);
@@ -490,7 +515,7 @@ const initialResult = calculate(initialInputs, limits);
       renderResults(result, resultsRegion, {
         amountEl: mobileAmount,
         subEl: mobileSub,
-      });
+      }, inputs.grossSalaryDollars);
     };
 
     let debounceTimer: ReturnType<typeof setTimeout> | undefined;
@@ -498,6 +523,18 @@ const initialResult = calculate(initialInputs, limits);
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(runCalculation, 100);
     };
+
+    // Clickable target cards in Results select the corresponding age-band radio
+    resultsRegion.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement | null)?.closest<HTMLButtonElement>('[data-select-age]');
+      if (!btn) return;
+      const ageVal = btn.dataset.selectAge;
+      const radio = form.querySelector<HTMLInputElement>(`input[name="age-band"][value="${ageVal}"]`);
+      if (radio) {
+        radio.checked = true;
+        runCalculation();
+      }
+    });
 
     form.addEventListener('input', scheduleUpdate);
     form.addEventListener('change', scheduleUpdate);

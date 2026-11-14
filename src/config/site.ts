@@ -62,4 +62,14 @@ export const INNER_GUIDES: readonly NavGuideLink[] = [
     title: 'How 401(k) Contributions Affect Take-Home Pay',
     summary: 'Why pre-tax deferrals reduce federal/state income tax withholding—but never Social Security or Medicare.',
   },
+  {
+    href: '/roth-vs-pretax-401k-2027/',
+    title: 'Roth vs. Pre-Tax 401(k) in 2027',
+    summary: 'How to split contributions using 2027 federal tax brackets and the $155,000 Roth catch-up rule.',
+  },
+  {
+    href: '/401k-excess-contribution-fix/',
+    title: 'How to Fix Excess 401(k) Contributions',
+    summary: 'Step-by-step corrective distribution guide and the April 15 deadline if you over-contributed in 2027.',
+  },
 ];

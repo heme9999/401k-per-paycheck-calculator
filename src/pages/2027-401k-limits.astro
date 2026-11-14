@@ -8,6 +8,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   title="2027 401(k) Contribution Limits (Official IRS Notice 2026-66)"
   description="Official 2027 401(k) limits from IRS Notice 2026-66: $25,500 base deferral, $8,500 catch-up ($34,000), $11,750 super catch-up for ages 60-63 ($37,250), and $75,000 Section 415(c) limit."
 >
+  <nav aria-label="Breadcrumb" class="breadcrumb">
+    <a href="/">Home</a> / <span>2027 401(k) Contribution Limits</span>
+  </nav>
+
   <article class="prose">
     <h1>2027 401(k) Contribution Limits</h1>
     <p class="subtitle">
@@ -20,7 +24,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <LimitsStrip />
 
-    <h2>2027 vs. 2026 Official IRS Limits</h2>
+    <h2>2027 vs. 2026 Official IRS 401(k) Limits</h2>
     <div tabindex="0" role="region" aria-label="2027 401(k) Limits Comparison" class="table-wrapper" style="margin-bottom: 1.5rem;">
       <table class="data-table">
         <thead>
@@ -51,18 +55,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <td data-label="2026 Limit">$72,000</td>
             <td data-label="2027 Official Limit">$75,000</td>
           </tr>
-          <tr>
-            <th>IRA contribution limit (context only)</th>
-            <td data-label="2026 Limit">—</td>
-            <td data-label="2027 Official Limit">$7,500</td>
-          </tr>
         </tbody>
       </table>
     </div>
+    <p class="hint" style="margin-bottom: 1.5rem;">
+      For context, the 2027 IRA contribution limit is $7,500 (separate from your 401(k) limit).
+    </p>
 
     <h2>Section 415(c) Total Additions Limit ($75,000)</h2>
     <p>
       The combined limit for employee elective deferrals, employer matching contributions, profit-sharing, and after-tax non-Roth contributions is <strong>$75,000</strong> in 2027. Catch-up contributions do not count toward the 415(c) cap, so total additions can reach <strong>$83,500</strong> at age 50+ or <strong>$86,750</strong> at ages 60–63.
+    </p>
+    <p>
+      Next steps: see <a href="/how-much-401k-per-paycheck-to-max-out-2027/">what percentage of salary maxes out in 2027</a> or <a href="/roth-vs-pretax-401k-2027/">how to split Roth vs. pre-tax</a>.
     </p>
   </article>
 

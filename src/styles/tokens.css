@@ -32,6 +32,7 @@
 html {
   font-size: 100%;
   -webkit-text-size-adjust: 100%;
+  overflow-x: clip;
 }
 
 body {
@@ -42,6 +43,7 @@ body {
   font-size: 1.03125rem;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
 }
 
 .tabular {
@@ -139,7 +141,8 @@ a:hover {
 .site-nav {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-4);
+  gap: var(--space-1) var(--space-4);
+  max-width: 100%;
   font-family: var(--font-sans);
   font-size: 0.875rem;
   text-transform: uppercase;
@@ -811,10 +814,53 @@ details.why-inline > summary::-webkit-details-marker {
 }
 
 .target-box {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  border: 0;
   padding: var(--space-3) var(--space-2);
   border-right: 1px solid var(--hairline);
   background: transparent;
   border-radius: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.target-box:hover {
+  background: rgba(17, 17, 17, 0.04);
+}
+
+.target-box-cta {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--accent);
+  text-decoration: underline;
+  margin-top: 4px;
+}
+
+.results-section-heading {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink);
+  margin: 0 0 var(--space-3);
+  padding-top: 0;
+  border-top: 0;
+}
+
+.breadcrumb {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin-bottom: var(--space-4);
+}
+
+.breadcrumb a {
+  color: var(--muted);
 }
 
 .target-box:first-child {
@@ -906,8 +952,14 @@ details.why-inline > summary::-webkit-details-marker {
 }
 
 /* Classic Ruled Data Table */
+.calc-grid > * {
+  min-width: 0;
+}
+
 .table-wrapper {
-  overflow: auto;
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
   max-inline-size: 100%;
   container-type: inline-size;
   background: transparent;
@@ -949,6 +1001,7 @@ table.data-table th:first-child,
 table.data-table td:first-child {
   text-align: left;
   padding-left: 0;
+  white-space: normal;
 }
 
 table.data-table th:last-child,
@@ -1234,6 +1287,11 @@ table.data-table tbody tr:last-child td {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-4);
+}
+
+.prose table.data-table th,
+.prose table.data-table td {
+  white-space: normal;
 }
 
 .prose {

@@ -1,13 +1,25 @@
 ---
-import MaxOutTable from '../components/MaxOutTable.astro';
 import RelatedGuides from '../components/RelatedGuides.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const salaryRows = [
+  { salary: '$60,000', under50: '42.5%', age50: '56.7%', age60to63: '62.1%' },
+  { salary: '$80,000', under50: '31.9%', age50: '42.5%', age60to63: '46.6%' },
+  { salary: '$100,000', under50: '25.5%', age50: '34.0%', age60to63: '37.3%' },
+  { salary: '$125,000', under50: '20.4%', age50: '27.2%', age60to63: '29.8%' },
+  { salary: '$150,000', under50: '17.0%', age50: '22.7%', age60to63: '24.8%' },
+  { salary: '$200,000', under50: '12.8%', age50: '17.0%', age60to63: '18.6%' },
+];
 ---
 
 <BaseLayout
   title="How Much 401(k) Per Paycheck to Max Out in 2027"
-  description="Exact per-paycheck 401(k) amounts to max out $25,500, $34,000, or $37,250 in 2027 for weekly, biweekly (26 and 27), semi-monthly, and monthly schedules."
+  description="Exact per-paycheck 401(k) dollar amounts and salary percentages to max out $25,500, $34,000, or $37,250 in 2027."
 >
+  <nav aria-label="Breadcrumb" class="breadcrumb">
+    <a href="/">Home</a> / <span>How Much Per Paycheck to Max Out in 2027</span>
+  </nav>
+
   <article class="prose">
     <h1>How Much 401(k) Per Paycheck to Max Out in 2027</h1>
     <p class="subtitle">
@@ -17,14 +29,40 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <div class="cta-back">
       <a class="btn btn-primary" href="/" style="text-decoration: none;">Customize for Your Remaining Paychecks →</a>
     </div>
-  </article>
 
-  <MaxOutTable />
+    <h2>What Percentage of Salary Maxes Out 2027 Limits?</h2>
+    <p>
+      Many payroll portals only let you enter a whole-number percentage rather than a dollar amount. Here is the approximate percentage of annual gross pay needed to reach the 2027 limits:
+    </p>
+    <div tabindex="0" role="region" aria-label="Salary Percentage to Max Out 2027 401(k)" class="table-wrapper" style="margin-bottom: 1.5rem;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Annual Gross Salary</th>
+            <th>Under 50 ($25,500)</th>
+            <th>50–59 &amp; 64+ ($34,000)</th>
+            <th>Ages 60–63 ($37,250)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {salaryRows.map((row) => (
+            <tr>
+              <th scope="row">{row.salary}</th>
+              <td data-label="Under 50 ($25,500)">{row.under50}</td>
+              <td data-label="50–59 & 64+ ($34,000)">{row.age50}</td>
+              <td data-label="Ages 60–63 ($37,250)">{row.age60to63}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="hint">
+      Note: If your payroll system only accepts whole percentages, rounding up by 1% can cause you to hit the cap before December—check <a href="/401k-match-true-up/">whether your plan has an employer match true-up</a> before front-loading.
+    </p>
 
-  <article class="prose" style="margin-top: 1.5rem;">
     <h2>Why We Round Down to the Cent (Never $980.77 × 26)</h2>
     <p>
-      Dividing $25,500 by 26 gives $980.76923…. Rounding up to $980.77 × 26 equals $25,500.02—two cents over the statutory limit. Rounding the regular paycheck down to $980.76 and adjusting the final paycheck to $981.00 hits $25,500.00 to the penny.
+      Dividing $25,500 by 26 gives $980.76923…. Rounding up to $980.77 × 26 equals $25,500.02—two cents over the statutory limit. Rounding the regular paycheck down to $980.76 and adjusting the final paycheck to $981.00 hits $25,500.00 to the penny. See also <a href="/27-paychecks-401k-2027/">how 27-paycheck years work in 2027</a>.
     </p>
   </article>
 

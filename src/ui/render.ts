@@ -19,6 +19,7 @@ export function renderResults(
   result: CalculationResult,
   container: HTMLElement,
   mobileSticky: { amountEl: HTMLElement | null; subEl: HTMLElement | null },
+  grossSalaryDollars: number | null = null,
 ): void {
   const { limits } = result;
   const ageSelected = result.selectedAgeBand !== null;
@@ -26,44 +27,71 @@ export function renderResults(
 
   // Mobile sticky bar headline
   if (mobileSticky.amountEl && mobileSticky.subEl) {
-    mobileSticky.amountEl.textContent = formatCents(result.regularPaycheckCents);
-    mobileSticky.subEl.textContent = ageSelected
-      ? `per paycheck (${AGE_BAND_LABELS[result.selectedAgeBand!]})`
-      : 'per paycheck (Under 50 base — select age above)';
+    if (!ageSelected) {
+      mobileSticky.amountEl.textContent = 'Select age';
+      mobileSticky.subEl.textContent = '2027 limits: $25,500 / $34,000 / $37,250';
+    } else {
+      mobileSticky.amountEl.textContent = `Per paycheck ${formatCents(result.regularPaycheckCents)}`;
+      mobileSticky.subEl.textContent = `Limit ${formatCents(target.annualLimitCents, { showZeroCents: false })} (${AGE_BAND_LABELS[result.selectedAgeBand!]})`;
+    }
   }
 
-  // 1. Headline & 3-target comparison if age unselected
-  let headlineHtml = '';
-  if (!ageSelected && result.status !== 'no_paychecks_left') {
+  // When age band is NOT selected yet: show 3 clickable target cards + placeholder + empty progress bar
+  if (!ageSelected) {
     const cards = result.allTargets
-      .map(
-        (t) => `
-        <div class="target-box">
+      .map((t) => {
+        const pct =
+          t.regularPaycheckPercentOfPay !== null
+            ? ` · ${formatPercent(t.regularPaycheckPercentOfPay, 1)} of pay`
+            : '';
+        return `
+        <button type="button" class="target-box" data-select-age="${t.ageBand}">
           <div class="target-box-age">${AGE_BAND_LABELS[t.ageBand]}</div>
           <div class="target-box-amount">${formatCents(t.regularPaycheckCents)}</div>
-          <div class="target-box-limit">Limit: ${formatCents(t.annualLimitCents, { showZeroCents: false })}</div>
-        </div>`,
-      )
+          <div class="target-box-limit">Limit: ${formatCents(t.annualLimitCents, { showZeroCents: false })}${pct}</div>
+          <span class="target-box-cta">Select →</span>
+        </button>`;
+      })
       .join('');
-    headlineHtml = `
-      <div class="result-headline-label">2027 Max-Out Targets by Age (Select your age band to lock one in)</div>
+
+    container.innerHTML = `
+      <h2 class="results-section-heading">Your 2027 Per-Paycheck Plan</h2>
+      <div class="result-headline-label">2027 Max-Out Targets by Age (Click a card to lock in)</div>
       <div class="targets-compare">${cards}</div>
+      <div class="status-banner status-banner-info">
+        <span aria-hidden="true">i</span>
+        <div>Select your age band above (or click one of the three target cards) to lock in your per-paycheck plan, final paycheck adjustment, and progress tracker.</div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-labels">
+          <span>So far: ${formatCents(target.alreadyContributedCents, { showZeroCents: false })}</span>
+          <span>Select an age band to project</span>
+        </div>
+        <div class="progress-track" role="img" aria-label="No age band selected yet">
+          <div class="progress-ytd" style="width: 0%"></div>
+          <div class="progress-projected" style="width: 0%"></div>
+        </div>
+      </div>
     `;
+    return;
   }
 
   const headlineAmount = formatCents(result.regularPaycheckCents);
   const hasAdjustedFinal =
     result.remainingPaychecks > 1 &&
     result.finalPaycheckCents !== result.regularPaycheckCents;
-  const pctNote =
+
+  const salaryShareLine =
+    grossSalaryDollars !== null &&
+    grossSalaryDollars > 0 &&
     result.regularPaycheckPercentOfPay !== null
-      ? ` · ${formatPercent(result.regularPaycheckPercentOfPay)} of gross pay`
+      ? `<p class="result-subline" style="margin-bottom: 0.5rem;"><strong>Equals ~${formatPercent(result.regularPaycheckPercentOfPay, 1)}</strong> of your $${grossSalaryDollars.toLocaleString('en-US')} gross salary.${!result.match.hasMatchInputs ? ' <span style="color: var(--muted);">Add employer match in Section D below to see free employer money.</span>' : ''}</p>`
       : '';
 
   const finalNote = hasAdjustedFinal
     ? `<span class="result-final-accent">Final paycheck adjusted to ${formatCents(result.finalPaycheckCents)}</span> so the year totals exact ${formatCents(result.cappedProjectedAnnualEmployeeCents)} (never over the limit).`
     : result.remainingPaychecks > 0
-      ? `Across ${result.remainingPaychecks} remaining paycheck${result.remainingPaychecks === 1 ? '' : 's'}${pctNote}.`
+      ? `Across ${result.remainingPaychecks} remaining paycheck${result.remainingPaychecks === 1 ? '' : 's'}.`
       : 'No remaining paychecks entered for 2027.';
 
   // 2. Status banner (icon + text, never color alone)
@@ -193,7 +221,7 @@ export function renderResults(
         </div>
       </div>
       <p class="hint" style="margin-top: 0.5rem;">
-        Estimate only based on your entered marginal rates. Pre-tax 401(k) contributions do <strong>not</strong> reduce Social Security (6.2%) or Medicare (1.45%) taxes.
+        Estimate only based on your entered marginal rates. Pre-tax 401(k) deferrals do <strong>not</strong> reduce Social Security (6.2%) or Medicare (1.45%) taxes.
       </p>
     `;
   }
@@ -239,9 +267,10 @@ export function renderResults(
       : '';
 
   container.innerHTML = `
-    ${headlineHtml}
-    <div class="result-headline-label">${ageSelected ? `${escapeHtml(AGE_BAND_LABELS[result.selectedAgeBand!])} · ` : ''}Per remaining paycheck</div>
+    <h2 class="results-section-heading">Your 2027 Per-Paycheck Plan</h2>
+    <div class="result-headline-label">${escapeHtml(AGE_BAND_LABELS[result.selectedAgeBand!])} · Per remaining paycheck</div>
     <div class="result-headline-value tabular">${headlineAmount}</div>
+    ${salaryShareLine}
     <p class="result-subline">${finalNote}</p>
     ${statusBanner}
     ${progressHtml}
