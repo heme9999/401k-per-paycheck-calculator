@@ -40,7 +40,7 @@ const schemas = structuredData
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
-    <meta name="theme-color" content="#0F6B4F" />
+    <meta name="theme-color" content="#111111" />
     <meta name="google-site-verification" content="wMz2VDeMwD8R6yiCgJIqFD_wM2wSzrSEauzvCtzKHyw" />
     {schemas.map((schema) => (
       <script type="application/ld+json" set:html={JSON.stringify(schema)} />
@@ -48,18 +48,26 @@ const schemas = structuredData
   </head>
   <body class={hasCalculator ? 'has-calculator' : ''}>
     <header class="site-header">
-      <div class="container site-header-inner">
-        <a class="site-brand" href="/">
-          <span class="site-brand-mark" aria-hidden="true">401k</span>
-          <span>2027 Per-Paycheck Calculator</span>
-        </a>
-        <nav class="site-nav" aria-label="Primary">
-          <a href="/" aria-current={Astro.url.pathname === '/' ? 'page' : undefined}>Calculator</a>
-          <a href="/2027-401k-limits/" aria-current={Astro.url.pathname === '/2027-401k-limits/' ? 'page' : undefined}>2027 Limits</a>
-          <a href="/401k-super-catch-up-60-63-2027/" aria-current={Astro.url.pathname === '/401k-super-catch-up-60-63-2027/' ? 'page' : undefined}>Ages 60–63</a>
-          <a href="/roth-catch-up-high-earners/" aria-current={Astro.url.pathname === '/roth-catch-up-high-earners/' ? 'page' : undefined}>Roth Rule</a>
-          <a href="/methodology/" aria-current={Astro.url.pathname === '/methodology/' ? 'page' : undefined}>Methodology</a>
-        </nav>
+      <div class="container">
+        <div class="masthead-top-rule">
+          <div class="site-header-inner">
+            <a class="site-brand" href="/">
+              <span class="site-brand-mark" aria-hidden="true">401(k)</span>
+              <span>2027 Per-Paycheck Calculator</span>
+            </a>
+            <nav class="site-nav" aria-label="Primary">
+              <a href="/" aria-current={Astro.url.pathname === '/' ? 'page' : undefined}>Calculator</a>
+              <a href="/2027-401k-limits/" aria-current={Astro.url.pathname === '/2027-401k-limits/' ? 'page' : undefined}>2027 Limits</a>
+              <a href="/401k-super-catch-up-60-63-2027/" aria-current={Astro.url.pathname === '/401k-super-catch-up-60-63-2027/' ? 'page' : undefined}>Ages 60–63</a>
+              <a href="/roth-catch-up-high-earners/" aria-current={Astro.url.pathname === '/roth-catch-up-high-earners/' ? 'page' : undefined}>Roth Rule</a>
+              <a href="/methodology/" aria-current={Astro.url.pathname === '/methodology/' ? 'page' : undefined}>Methodology</a>
+            </nav>
+          </div>
+          <div class="masthead-double-rule" aria-hidden="true"></div>
+          <div class="masthead-dateline">
+            {limits.source} · Published November 12, 2026 · Free · No signup · Calculated in your browser
+          </div>
+        </div>
       </div>
     </header>
 

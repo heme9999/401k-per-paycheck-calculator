@@ -61,7 +61,7 @@ export function renderResults(
       : '';
 
   const finalNote = hasAdjustedFinal
-    ? `Final paycheck adjusted to <strong>${formatCents(result.finalPaycheckCents)}</strong> so the year totals exact ${formatCents(result.cappedProjectedAnnualEmployeeCents)} (never over the limit).`
+    ? `<span class="result-final-accent">Final paycheck adjusted to ${formatCents(result.finalPaycheckCents)}</span> so the year totals exact ${formatCents(result.cappedProjectedAnnualEmployeeCents)} (never over the limit).`
     : result.remainingPaychecks > 0
       ? `Across ${result.remainingPaychecks} remaining paycheck${result.remainingPaychecks === 1 ? '' : 's'}${pctNote}.`
       : 'No remaining paychecks entered for 2027.';

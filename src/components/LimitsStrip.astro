@@ -8,20 +8,18 @@ const total60to63 = limits.electiveDeferral + limits.catchUp60to63;
 ---
 
 <aside class="limits-strip" aria-label="Official 2027 401(k) Contribution Limits">
-  <div class="limits-strip-items">
-    <span class="limits-strip-item">
-      Base: <strong>${limits.electiveDeferral.toLocaleString('en-US')}</strong>
-    </span>
-    <span aria-hidden="true">·</span>
-    <span class="limits-strip-item">
-      50+: <strong>+${limits.catchUp50.toLocaleString('en-US')} (${total50Plus.toLocaleString('en-US')})</strong>
-    </span>
-    <span aria-hidden="true">·</span>
-    <span class="limits-strip-item">
-      60–63: <strong>+${limits.catchUp60to63.toLocaleString('en-US')} (${total60to63.toLocaleString('en-US')}</strong>, replaces 50+ amount)
-    </span>
-  </div>
-  <div class="limits-strip-source">
-    {limits.source}, Nov 12, 2026
+  <div class="limits-strip-cols">
+    <div class="limits-strip-col">
+      <span class="limits-strip-label">Under 50</span>
+      <span class="limits-strip-value">${limits.electiveDeferral.toLocaleString('en-US')}</span>
+    </div>
+    <div class="limits-strip-col">
+      <span class="limits-strip-label">50+ (+${limits.catchUp50.toLocaleString('en-US')})</span>
+      <span class="limits-strip-value">${total50Plus.toLocaleString('en-US')}</span>
+    </div>
+    <div class="limits-strip-col">
+      <span class="limits-strip-label">60–63 (+${limits.catchUp60to63.toLocaleString('en-US')}, replaces 50+)</span>
+      <span class="limits-strip-value">${total60to63.toLocaleString('en-US')}</span>
+    </div>
   </div>
 </aside>
